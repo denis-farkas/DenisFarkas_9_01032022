@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {fireEvent, screen, waitFor} from "@testing-library/dom"
+import {fireEvent, getByAltText, getByText, screen, waitFor} from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import Bills from "../containers/Bills"
 import { ROUTES, ROUTES_PATH} from "../constants/routes.js"
@@ -11,6 +11,7 @@ import {localStorageMock} from "../__mocks__/localStorage.js"
 import mockStore from "../__mocks__/store"
 import userEvent from "@testing-library/user-event"
 import router from "../app/Router.js"
+import '@testing-library/jest-dom'
 
 jest.mock("../app/Store", () => mockStore)
 
@@ -92,6 +93,66 @@ describe("Given I am connected as an employee", () => {
       screen.getAllByTestId("icon-eye")[0].click()
       expect(testBill.handleClickIconEye).toBeCalled()
       expect(document.querySelector(".modal")).toBeTruthy()
+    })
+  })  
+ 
+
+  describe("When I click on the eye icon", () => {
+    test("A modal should open and this is an image", () => {
+      const goodBill = [{
+        "id": "47qAXb6fIm2zOKkLzMro",
+        "vat": "80",
+        "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3",
+        "status": "pending",
+        "type": "Hôtel et logement",
+        "commentary": "séminaire billed",
+        "name": "encore",
+        "fileName": "facture-client-php-exportee-dans-document-pdf-enregistre-sur-disque-dur.png",
+        "date": "2004-04-04",
+        "amount": 400,
+        "commentAdmin": "ok",
+        "email": "a@a",
+        "pct": 20
+      }]
+      document.body.innerHTML = BillsUI({ data: goodBill })
+      const testBill = new Bills({ document, onNavigate, store: null, localStorage: window.localStorage })
+      testBill.handleClickIconEye = jest.fn()
+      const icon = screen.getAllByTestId("icon-eye")[0]
+      icon.addEventListener('click', testBill.handleClickIconEye)
+      fireEvent.click(icon)
+      const modale = document.querySelector(".modal")
+      expect(testBill.handleClickIconEye).toBeCalled()
+      expect(modale).toBeTruthy()
+      const img = screen.findByRole('test')
+      expect(img).toBeTruthy()
+    })
+
+    test("A modal should open but there is no image", () => {
+      const wrongBill = [{
+        "id": "47qAXb6fIm2zOKkLzMro",
+        "vat": "80",
+        "fileUrl": undefined,
+        "status": "pending",
+        "type": "Hôtel et logement",
+        "commentary": "séminaire billed",
+        "name": "encore",
+        "fileName": undefined,
+        "date": "2004-04-04",
+        "amount": 400,
+        "commentAdmin": "ok",
+        "email": "a@a",
+        "pct": 20
+      }]
+      document.body.innerHTML = BillsUI({ data: wrongBill })
+      const testBill = new Bills({ document, onNavigate, store: null, localStorage: window.localStorage })
+      testBill.handleClickIconEye = jest.fn()
+      const icon = screen.getAllByTestId("icon-eye")[0]
+      icon.addEventListener('click', testBill.handleClickIconEye)
+      fireEvent.click(icon)
+      const modaleBody = document.querySelector(".modal-body")
+      expect(testBill.handleClickIconEye).toBeCalled()
+      expect(modaleBody.innerHTML).toContain('')
+      
     })
   })  
 
