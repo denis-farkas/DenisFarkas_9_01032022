@@ -121,6 +121,7 @@ describe("Given I am connected as an employee", () => {
       icon.addEventListener('click', testBill.handleClickIconEye)
       fireEvent.click(icon)
       const modale = document.querySelector(".modal")
+     
       expect(testBill.handleClickIconEye).toBeCalled()
       expect(modale).toBeTruthy()
       const img = screen.findByRole('test')
@@ -152,7 +153,6 @@ describe("Given I am connected as an employee", () => {
       const modaleBody = document.querySelector(".modal-body")
       expect(testBill.handleClickIconEye).toBeCalled()
       expect(modaleBody.innerHTML).toContain('')
-      
     })
   })  
 

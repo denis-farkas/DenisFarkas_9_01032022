@@ -54,6 +54,8 @@ describe("Given I am connected as an employee", () => {
     })
   })
 
+  
+
   describe("When I upload a file which is not an image", () => {
     test("Then the error message should be display", async () => {
       document.body.innerHTML = NewBillUI()

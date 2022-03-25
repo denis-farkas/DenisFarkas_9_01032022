@@ -27,16 +27,9 @@ export default class NewBill {
     formData.append('email', email)
 
     if (['jpg', 'jpeg', 'png', 'webp'].includes(fileExtension)) {
-      this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
+      this.store.bills().create({ data: formData, headers: { noContentType: true}
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -44,7 +37,6 @@ export default class NewBill {
     }
     else {
       document.querySelector(".error").style.display = "block"
-      file.value = null
     }
     
   }
